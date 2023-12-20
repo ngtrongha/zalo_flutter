@@ -88,19 +88,23 @@ class ZaloFlutter {
     String? refreshToken,
     Map<String, dynamic> externalInfo = const <String, dynamic>{},
   }) async {
-    final String codeVerifier = ZaloFlutter._getCodeVerifier();
-    final String codeChallenge = ZaloFlutter._getCodeChallenge(codeVerifier);
-    final Map<dynamic, dynamic>? rs =
-        await channel.invokeMethod<Map<dynamic, dynamic>?>(
-      'login',
-      <String, dynamic>{
-        'codeVerifier': codeVerifier,
-        'codeChallenge': codeChallenge,
-        'extInfo': externalInfo,
-        'refreshToken': refreshToken,
-      },
-    ).setTimeout(_timeout);
-    return rs;
+    try {
+      final String codeVerifier = ZaloFlutter._getCodeVerifier();
+      final String codeChallenge = ZaloFlutter._getCodeChallenge(codeVerifier);
+      final Map<dynamic, dynamic>? rs =
+          await channel.invokeMethod<Map<dynamic, dynamic>?>(
+        'login',
+        <String, dynamic>{
+          'codeVerifier': codeVerifier,
+          'codeChallenge': codeChallenge,
+          'extInfo': externalInfo,
+          'refreshToken': refreshToken,
+        },
+      ).setTimeout(_timeout);
+      return rs;
+    } catch (e) {
+      return <String, dynamic>{'error': e.toString()};
+    }
   }
 
   /// * Lấy thông tin người dùng
